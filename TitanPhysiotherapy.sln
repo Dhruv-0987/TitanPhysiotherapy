@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TitanPhysiotherapy", "TitanPhysiotherapy\TitanPhysiotherapy.csproj", "{512EB155-0B98-42C5-BFFE-20DB39329034}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{512EB155-0B98-42C5-BFFE-20DB39329034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{512EB155-0B98-42C5-BFFE-20DB39329034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{512EB155-0B98-42C5-BFFE-20DB39329034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{512EB155-0B98-42C5-BFFE-20DB39329034}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B74D9869-F69F-4C6D-95B8-0FEF7343988C}
+	EndGlobalSection
+EndGlobal
