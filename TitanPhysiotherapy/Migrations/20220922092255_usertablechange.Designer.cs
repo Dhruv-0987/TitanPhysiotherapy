@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TitanPhysiotherapy.Database;
 
@@ -11,9 +12,10 @@ using TitanPhysiotherapy.Database;
 namespace TitanPhysiotherapy.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20220922092255_usertablechange")]
+    partial class usertablechange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,67 +56,6 @@ namespace TitanPhysiotherapy.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("TitanPhysiotherapy.Models.StaffModel.Staff", b =>
-                {
-                    b.Property<int>("staffId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("staffId"), 1L, 1);
-
-                    b.Property<int>("age")
-                        .HasColumnType("int");
-
-                    b.Property<string>("clinicLocation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("contactNum")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("firstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("lastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("userId")
-                        .HasColumnType("int");
-
-                    b.HasKey("staffId");
-
-                    b.ToTable("Staff");
-                });
-
-            modelBuilder.Entity("TitanPhysiotherapy.Models.Treatment", b =>
-                {
-                    b.Property<int>("treatmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("treatmentId"), 1L, 1);
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("patientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("staffId")
-                        .HasColumnType("int");
-
-                    b.HasKey("treatmentId");
-
-                    b.ToTable("Treatment");
-                });
-
             modelBuilder.Entity("TitanPhysiotherapy.Models.UserModels.User", b =>
                 {
                     b.Property<int>("id")
@@ -143,10 +84,6 @@ namespace TitanPhysiotherapy.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

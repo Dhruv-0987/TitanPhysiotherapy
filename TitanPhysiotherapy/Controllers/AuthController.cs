@@ -6,58 +6,37 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TitanPhysiotherapy.Models;
+using TitanPhysiotherapy.Services.UserService;
+using TitanPhysiotherapy.Models.UserModels;
 
 namespace TitanPhysiotherapy.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Authentication")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new User();
+        private readonly IAuthInterface _authService;
+        public AuthController(IAuthInterface authService)
+        {
+            _authService = authService;
+        }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<ServiceResponse<User>>> Register(UserRegisterDto request)
         {
-            CreateHashPassword(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            user.Username = request.UserName;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
-
-            return Ok(user);
+            return Ok(await _authService.Register(request));
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login (UserDto request)
+        public async Task<ActionResult<ServiceResponse<string>>> Login (UserDto request)
         {
-            if (request.UserName != user.Username)
-            {
-                return BadRequest("User not found");
-            }
-
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Password Incorrect");
-            }
-
-            return Ok("User authenticated");
+            return Ok(await _authService.Login(request.Username, request.Password));
         }
 
-        private void CreateHashPassword(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        [HttpPost("UserExists")]
+        public async Task<ActionResult<bool>> UserExists (UserDto request)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
+            return Ok(await _authService.UserExists(request.Username));
         }
     }
 }

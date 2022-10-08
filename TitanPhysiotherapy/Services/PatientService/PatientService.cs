@@ -3,6 +3,8 @@ using Microsoft.Exchange.WebServices.Data;
 using TitanPhysiotherapy.Models.PatientModels;
 using TitanPhysiotherapy.Models.PatientModels.DTOS;
 using TitanPhysiotherapy.Models;
+using TitanPhysiotherapy.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace TitanPhysiotherapy.Services.PatientService
 {
@@ -14,10 +16,11 @@ namespace TitanPhysiotherapy.Services.PatientService
         };
 
         private readonly IMapper _mapper;
-
-        public PatientService(IMapper mapper)
+        private readonly DataContext _context;
+        public PatientService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
+            _context = context;
         }
         public async Task<ServiceResponse<List<Patient>>> AddPatient(PatientDto patient)
         {
@@ -29,9 +32,9 @@ namespace TitanPhysiotherapy.Services.PatientService
             patientToAdd.lastName = patient.lastName;
             patientToAdd.contactNum = patient.contactNum;
             patientToAdd.id = patient.id;
-
-            patients.Add(patientToAdd);
-            ServiceResponse.Data = patients;
+            _context.Patients.Add(patientToAdd);
+            await _context.SaveChangesAsync();
+            ServiceResponse.Data = await _context.Patients.ToListAsync();
             return ServiceResponse;
         }
 
@@ -40,8 +43,9 @@ namespace TitanPhysiotherapy.Services.PatientService
             var serviceResponse = new ServiceResponse<List<Patient>>();
             try
             {
-                Patient patient = patients.First(p => p.id == id);
-                patients.Remove(patient);
+                Patient patient = await _context.Patients.FindAsync(keyValues: id);
+                _context.Patients.Remove(patient);
+                await _context.SaveChangesAsync();
                 serviceResponse.Data = patients;
                 return serviceResponse;
             }
@@ -57,13 +61,14 @@ namespace TitanPhysiotherapy.Services.PatientService
         public async Task<ServiceResponse<List<Patient>>> GetAllPatients()
         {
             var serviceResponse = new ServiceResponse<List<Patient>>();
-            serviceResponse.Data = patients;
+            var dbPatients = await _context.Patients.ToListAsync();
+            serviceResponse.Data = dbPatients;
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<Patient>> GetPatientById(int id)
         {
-            Patient patient = patients.Find(p => p.id == id);
+            Patient patient = await _context.Patients.FindAsync(keyValues: id);
             var serviceResponse = new ServiceResponse<Patient>();
             serviceResponse.Data = patient;
             return serviceResponse;
@@ -72,11 +77,12 @@ namespace TitanPhysiotherapy.Services.PatientService
 
         public async Task<ServiceResponse<List<Patient>>> UpdatePatientById(PatientDto newPatient)
         {
-            Patient patientToUpdate = patients.Find(p => p.id == newPatient.id);
+            Patient patientToUpdate = await _context.Patients.FindAsync(keyValues: newPatient.id);
             patientToUpdate.firstName = newPatient.firstName;
             patientToUpdate.lastName = newPatient.lastName;
             patientToUpdate.contactNum = newPatient.contactNum;
             patientToUpdate.id = newPatient.id;
+            await _context.SaveChangesAsync();
             var serviceResponse = new ServiceResponse<List<Patient>>();
             serviceResponse.Data = patients;
             serviceResponse.message = "Patient details updated";
