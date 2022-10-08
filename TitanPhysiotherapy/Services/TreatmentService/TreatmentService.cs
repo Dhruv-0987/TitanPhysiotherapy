@@ -22,7 +22,7 @@ namespace TitanPhysiotherapy.Services.TreatmentService
 
         }
 
-        public async Task<ServiceResponse<List<Treatment>>> getTreatmentById(int id)
+        public async Task<ServiceResponse<List<Treatment>>> GetTreatmentById(int id)
         {
             var treatments = _context.Treatment.Where(t => t.treatmentId == id);
             var serviceResponse = new ServiceResponse<List<Treatment>>();
