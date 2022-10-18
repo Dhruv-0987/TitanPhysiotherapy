@@ -32,6 +32,7 @@ namespace TitanPhysiotherapy.Services.PatientService
             patientToAdd.lastName = patient.lastName;
             patientToAdd.contactNum = patient.contactNum;
             patientToAdd.id = patient.id;
+            patientToAdd.email = patient.email;
             _context.Patients.Add(patientToAdd);
             await _context.SaveChangesAsync();
             ServiceResponse.Data = await _context.Patients.ToListAsync();

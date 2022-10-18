@@ -11,15 +11,24 @@ namespace TitanPhysiotherapy.Services.TreatmentService
         {
             _context = context;
         }
-        public async Task<ServiceResponse<Treatment>> AddTreatment(Treatment treatment)
+        public async Task<ServiceResponse<List<Treatment>>> AddTreatment(TreatmentDto treatmentDto)
         {
+            var serviceResponse = new ServiceResponse<List<Treatment>>();
+            Treatment treatment = new Treatment();
+
+            treatment.description = treatmentDto.description;
+            treatment.patientId = treatmentDto.patientId;
+            treatment.staffId = treatmentDto.staffId;
+            treatment.treatmentId = treatmentDto.treatmentId;
+            treatment.DateTime = DateTime.Parse(treatmentDto.DateTime);
+            treatment.clinicLocation = treatmentDto.clinicLocation;
+            treatment.staffName = treatmentDto.staffName;
+
             _context.Treatment.Add(treatment);
             await _context.SaveChangesAsync();
-            var serviceResponse = new ServiceResponse<Treatment>();
-            serviceResponse.Data = treatment;
-            serviceResponse.message = "Treatment Added";
-            return serviceResponse;
 
+            serviceResponse.Data = await _context.Treatment.ToListAsync();
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<List<Treatment>>> GetTreatmentById(int id)
@@ -29,6 +38,7 @@ namespace TitanPhysiotherapy.Services.TreatmentService
             serviceResponse.Data = treatments.ToList();
             return serviceResponse;
         }
+
         public async Task<ServiceResponse<List<Treatment>>> GetTreatmentByPatientId(int id)
         {
             var treatments = _context.Treatment.Where(t => t.patientId == id);
@@ -77,6 +87,15 @@ namespace TitanPhysiotherapy.Services.TreatmentService
             await _context.SaveChangesAsync();
             var serviceResponse = new ServiceResponse<List<Treatment>>();
             serviceResponse.Data = await _context.Treatment.ToListAsync();
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<Treatment>>> GetTreatmentsByStaffIdAndDate(int id, string date)
+        {
+            var dateTime = DateTime.Parse(date);
+            var treatments = _context.Treatment.Where(t => t.staffId == id).Where(t => t.DateTime.Date == dateTime.Date).ToList();
+            var serviceResponse = new ServiceResponse<List<Treatment>>();
+            serviceResponse.Data = treatments;
             return serviceResponse;
         }
     }

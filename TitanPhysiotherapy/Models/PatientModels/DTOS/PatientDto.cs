@@ -7,5 +7,7 @@
         public string lastName { get; set; } = string.Empty;
         public int age { get; set; } = 0;
         public string contactNum { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
     }
 }

@@ -1,16 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TitanPhysiotherapy.Models
+﻿namespace TitanPhysiotherapy.Models
 {
-    public class Treatment
+    public class TreatmentDto
     {
-        [Key]
         public int treatmentId { get; set; } = 0;
         public int staffId { get; set; } = 0;
         public int patientId { get; set; } = 0;
         public string description { get; set; } = string.Empty;
-        public DateTime DateTime { get; set; } = DateTime.MinValue;
-        public string clinicLocation {get; set;} = string.Empty;
+        public string DateTime { get; set; } = String.Empty;
         public string staffName { get; set; } = string.Empty;
+        public string clinicLocation { get; set; } = string.Empty;
     }
 }

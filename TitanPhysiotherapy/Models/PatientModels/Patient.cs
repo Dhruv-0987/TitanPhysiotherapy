@@ -11,6 +11,8 @@ namespace TitanPhysiotherapy.Models.PatientModels
         public int age { get; set; }
         public string contactNum { get; set; }
         public string email { get; set; }
+        public byte[] passwordHash { get; set; }
+        public byte[] passwordSalt { get; set; }
 
     }
 }

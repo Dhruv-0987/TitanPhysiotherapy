@@ -9,5 +9,7 @@
         public string contactNum { get; set; } = string.Empty;
         public int userId { get; set; } = 0;
         public string clinicLocation { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
     }
 }

@@ -8,6 +8,9 @@ using System.Security.Claims;
 using TitanPhysiotherapy.Models;
 using TitanPhysiotherapy.Services.UserService;
 using TitanPhysiotherapy.Models.UserModels;
+using TitanPhysiotherapy.Models.PatientModels;
+using TitanPhysiotherapy.Models.PatientModels.DTOS;
+using TitanPhysiotherapy.Models.StaffModel;
 
 namespace TitanPhysiotherapy.Controllers
 {
@@ -21,16 +24,22 @@ namespace TitanPhysiotherapy.Controllers
             _authService = authService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<ServiceResponse<User>>> Register(UserRegisterDto request)
+        [HttpPost("RegisterPatient")]
+        public async Task<ActionResult<ServiceResponse<Patient>>> RegisterPatient(PatientDto request)
         {
-            return Ok(await _authService.Register(request));
+            return Ok(await _authService.RegisterPatient(request));
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<ServiceResponse<string>>> Login (UserDto request)
+        [HttpPost("LoginPatient")]
+        public async Task<ActionResult<ServiceResponse<Patient>>> Login (PatientDto request)
         {
-            return Ok(await _authService.Login(request.Username, request.Password));
+            return Ok(await _authService.LoginPatient(request.email, request.password));
+        }
+
+        [HttpPost("LoginStaff")]
+        public async Task<ActionResult<ServiceResponse<Staff>>> LoginStaff(StaffDto request)
+        {
+            return Ok(await _authService.LoginPatient(request.email, request.password));
         }
 
         [HttpPost("UserExists")]
