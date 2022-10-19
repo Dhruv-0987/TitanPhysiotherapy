@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 using TitanPhysiotherapy.Database;
 using TitanPhysiotherapy.Models;
 using TitanPhysiotherapy.Models.StaffModel;
@@ -20,7 +21,13 @@ namespace TitanPhysiotherapy.Services.StaffService
             newStaff.firstName = staff.firstName;
             newStaff.contactNum = staff.contactNum; 
             newStaff.clinicLocation = staff.clinicLocation;
+            newStaff.email = staff.email;
             newStaff.age = staff.id;
+
+            CreateHashPassword(staff.password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            newStaff.passwordHash = passwordHash;
+            newStaff.passwordSalt = passwordSalt;
 
             _context.Staff.Add(newStaff);
             await _context.SaveChangesAsync();
@@ -79,5 +86,24 @@ namespace TitanPhysiotherapy.Services.StaffService
             serviceResponse.success = true;
             return serviceResponse;
         }
+
+        private void CreateHashPassword(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }
     }
+
+    
 }

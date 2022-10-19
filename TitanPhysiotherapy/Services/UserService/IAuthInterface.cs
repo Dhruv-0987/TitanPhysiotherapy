@@ -11,6 +11,7 @@ namespace TitanPhysiotherapy.Services.UserService
         Task<ServiceResponse<Patient>> RegisterPatient(PatientDto request);
         Task<ServiceResponse<Patient>> LoginPatient(string username, string password);
         Task<ServiceResponse<Staff>> LoginStaff(string username, string password);
+        Task<ServiceResponse<string>> LoginAdmin(string username, string password);
         Task<bool> UserExists(string username);
         
     }

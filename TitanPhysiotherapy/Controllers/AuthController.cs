@@ -47,5 +47,10 @@ namespace TitanPhysiotherapy.Controllers
         {
             return Ok(await _authService.UserExists(request.Username));
         }
+        [HttpPost("LoginAdmin/{email}/{password}")]
+        public async Task<ActionResult<ServiceResponse<string>>> LoginAdmin(string email, string password)
+        {
+            return Ok(await _authService.LoginAdmin(email, password));
+        }
     }
 }

@@ -21,14 +21,14 @@ namespace TitanPhysiotherapy.Services.UserService
         {
             var ServiceResponse = new ServiceResponse<User>();
             User user = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower().Equals(username.ToLower()));
-            
+
             if (user == null)
             {
                 ServiceResponse.Data = user;
                 ServiceResponse.message = "User Not Found.";
                 ServiceResponse.success = false;
             }
-            else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt)) 
+            else if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 ServiceResponse.Data = user;
                 ServiceResponse.message = "User Not Found password wrong";
@@ -40,7 +40,7 @@ namespace TitanPhysiotherapy.Services.UserService
                 ServiceResponse.message = "User Found";
                 ServiceResponse.success = true;
             }
-            
+
 
             return ServiceResponse;
         }
@@ -130,7 +130,7 @@ namespace TitanPhysiotherapy.Services.UserService
                 _context.Patients.Add(newPatient);
                 _context.SaveChanges();
             }
-            User lastAddedUser = _context.Users.OrderBy(u => u.id).LastOrDefault(); 
+            User lastAddedUser = _context.Users.OrderBy(u => u.id).LastOrDefault();
             var serviceResponse = new ServiceResponse<User>();
             serviceResponse.Data = lastAddedUser;
             serviceResponse.message = "user added";
@@ -159,17 +159,35 @@ namespace TitanPhysiotherapy.Services.UserService
             {
                 serviceResponse.success = true;
             }
-            
+
             return serviceResponse;
         }
 
         public async Task<bool> UserExists(string username)
         {
-            if ( _context.Users.Any(u => u.Username.ToLower() == username.ToLower()))
+            if (_context.Users.Any(u => u.Username.ToLower() == username.ToLower()))
             {
                 return true;
             }
             return false;
+        }
+
+        public async Task<ServiceResponse<string>> LoginAdmin(string username, string password)
+        {
+            var adminEmail = "admin123@titan.com";
+            var adminPassword = "Admin@123";
+            var serviceResponse = new ServiceResponse<string>();
+            if (username.ToLower().Equals(adminEmail.ToLower()) && password.ToLower().Equals(adminPassword.ToLower()))
+            {
+               serviceResponse.Data = adminEmail;
+               serviceResponse.success = true;
+            }
+            else
+            {
+                serviceResponse.Data = "Admin not found";
+                serviceResponse.success = false;
+            }
+            return serviceResponse;
         }
 
 

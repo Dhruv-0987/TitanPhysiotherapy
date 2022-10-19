@@ -90,5 +90,10 @@ namespace TitanPhysiotherapy.Services.PatientService
             serviceResponse.success = true;
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<bool>> ContactUs (ContactUsDto contactUsDto)
+        {
+
+        }
     }
 }

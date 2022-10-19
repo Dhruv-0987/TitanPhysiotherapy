@@ -11,5 +11,6 @@ namespace TitanPhysiotherapy.Services.PatientService
         Task<ServiceResponse<List<Patient>>> AddPatient(PatientDto patient);
         Task<ServiceResponse<List<Patient>>> DeletePatientById(int id);
         Task<ServiceResponse<List<Patient>>> UpdatePatientById(PatientDto patient);
+        Task<ServiceResponse<bool>> ContactUs(ContactUsDto contactUsDto);
     }
 }
