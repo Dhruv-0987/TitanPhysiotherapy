@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using TitanPhysiotherapy.Services.StaffService;
 using TitanPhysiotherapy.Services.TreatmentService;
+using TitanPhysiotherapy.Services.RatingService;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IAuthInterface, AuthService>();
 builder.Services.AddScoped<IStaffInterface, StaffService>();
 builder.Services.AddScoped<ITreatmentInterface, TreatmentService>();
+builder.Services.AddScoped<IRatingInterface, RatingService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

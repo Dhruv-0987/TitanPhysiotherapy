@@ -12,5 +12,7 @@ namespace TitanPhysiotherapy.Services.PatientService
         Task<ServiceResponse<List<Patient>>> DeletePatientById(int id);
         Task<ServiceResponse<List<Patient>>> UpdatePatientById(PatientDto patient);
         Task<ServiceResponse<bool>> ContactUs(ContactUsDto contactUsDto);
+
+        Task<ServiceResponse<bool>> BulkEmail(IFormFile emailFile);
     }
 }

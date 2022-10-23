@@ -46,5 +46,17 @@ namespace TitanPhysiotherapy.Controllers
         {
             return Ok(await _patientService.UpdatePatientById(patient));
         }
+
+        [HttpPost("ContactUs")]
+        public async Task<ActionResult<ServiceResponse<bool>>> ContactUs(ContactUsDto contactUsDto)
+        {
+            return Ok(await _patientService.ContactUs(contactUsDto));
+        }
+
+        [HttpPost("BulkEmail")]
+        public async Task<ActionResult<ServiceResponse<bool>>> BulkEmail(IFormFile emailFile)
+        {
+            return Ok(await _patientService.BulkEmail(emailFile));
+        }
     }
 }

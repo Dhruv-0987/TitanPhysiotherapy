@@ -40,10 +40,10 @@ namespace TitanPhysiotherapy.Controllers
             return Ok(await _staffService.UpdateStaffById(newStaff));
         }
 
-        [HttpDelete("DeleteStaff")]
-        public async Task<ActionResult<ServiceResponse<List<Staff>>>> DeleteStaff(int id)
+        [HttpPost("DeleteStaff/{staffId}")]
+        public async Task<ActionResult<ServiceResponse<List<Staff>>>> DeleteStaff(int staffId)
         {
-            return Ok(await _staffService.DeleteStaffById(id));
+            return Ok(await _staffService.DeleteStaffById(staffId));
         }
     }
 }

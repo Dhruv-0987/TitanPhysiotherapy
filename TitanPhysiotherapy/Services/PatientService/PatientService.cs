@@ -1,10 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.Exchange.WebServices.Data;
 using TitanPhysiotherapy.Models.PatientModels;
 using TitanPhysiotherapy.Models.PatientModels.DTOS;
 using TitanPhysiotherapy.Models;
 using TitanPhysiotherapy.Database;
 using Microsoft.EntityFrameworkCore;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
 
 namespace TitanPhysiotherapy.Services.PatientService
 {
@@ -17,6 +22,7 @@ namespace TitanPhysiotherapy.Services.PatientService
 
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private const String API_KEY = "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";
         public PatientService(IMapper mapper, DataContext context)
         {
             _mapper = mapper;
@@ -33,6 +39,11 @@ namespace TitanPhysiotherapy.Services.PatientService
             patientToAdd.contactNum = patient.contactNum;
             patientToAdd.id = patient.id;
             patientToAdd.email = patient.email;
+
+            CreateHashPassword(patient.password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            patientToAdd.passwordHash = passwordHash;
+            patientToAdd.passwordSalt = passwordSalt;
             _context.Patients.Add(patientToAdd);
             await _context.SaveChangesAsync();
             ServiceResponse.Data = await _context.Patients.ToListAsync();
@@ -93,7 +104,69 @@ namespace TitanPhysiotherapy.Services.PatientService
 
         public async Task<ServiceResponse<bool>> ContactUs (ContactUsDto contactUsDto)
         {
+            var subject = "Query " + contactUsDto.firstName + " " + contactUsDto.lastName;
+            var client = new SendGridClient(API_KEY);
+            var from = new EmailAddress("dhruvmat1998@gmail.com", "Titan Physio");
+            var to = new EmailAddress(contactUsDto.email, "");
+            var plainTextContent = "Thank You For COntacting Us. We Will get back to you shortly" + "\n" + "Your Query: " + contactUsDto.description;
+            var htmlContent = "<p>" + contactUsDto.description + "</p>";
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var response = client.SendEmailAsync(msg);
+            var serviceResponse = new ServiceResponse<bool>();
+            serviceResponse.Data = true;
+            serviceResponse.success = true;
+            return serviceResponse;
+        }
 
+        public async Task<ServiceResponse<bool>> BulkEmail([FromForm] IFormFile emailFile)
+        {
+            var subject = "TITAN PHYSIO NEWS LETTER";
+            var client = new SendGridClient(API_KEY);
+            var from = new EmailAddress("dhruvmat1998@gmail.com", "Titan Physio");
+            var plainTextContent = "Here is our weekly news letter" + "\n" + "Your Query: " ;
+            var htmlContent = "<p>" + "News Letter" + "</p>";
+            
+            var patients = await _context.Patients.ToListAsync();
+            var emails = new List<string>();
+
+            foreach(var patient in patients)
+            {
+                emails.Add(patient.email);
+            }
+
+            var serviceResponse = new ServiceResponse<bool>();
+            
+            foreach (var email in emails)
+            {
+                var to = new EmailAddress(email, "");
+                var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+                await msg.AddAttachmentAsync(
+                    emailFile.FileName,
+                    emailFile.OpenReadStream(),
+                    emailFile.ContentType,
+                    "attachment");
+                var res = client.SendEmailAsync(msg);
+                serviceResponse.Data = true;
+            }
+
+            return serviceResponse;
+        }
+
+        private void CreateHashPassword(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
         }
     }
 }
